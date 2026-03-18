@@ -1,218 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PremiumHub</title>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Segoe UI;
-}
-
 body{
+margin:0;
+font-family:Arial;
 background:#020617;
 color:white;
-overflow-x:hidden;
-}
-
-/* animated glow background */
-
-.bg{
-position:fixed;
-width:600px;
-height:600px;
-background:linear-gradient(45deg,#22c55e,#38bdf8);
-filter:blur(150px);
-opacity:0.3;
-top:-200px;
-left:-200px;
-animation:move 15s infinite alternate;
-}
-
-@keyframes move{
-0%{transform:translate(0,0)}
-100%{transform:translate(300px,200px)}
-}
-
-/* navbar */
-
-nav{
-display:flex;
-justify-content:space-between;
-padding:25px 60px;
-}
-
-nav h2{
-color:#22c55e;
-}
-
-nav a{
-color:white;
-margin-left:20px;
-text-decoration:none;
-}
-
-/* hero */
-
-.hero{
 text-align:center;
-padding:120px 20px;
 }
 
-.hero h1{
-font-size:60px;
-background:linear-gradient(90deg,#22c55e,#38bdf8);
--webkit-background-clip:text;
-color:transparent;
+header{
+padding:80px;
+background:linear-gradient(90deg,#1e293b,#020617);
 }
-
-.hero p{
-color:#94a3b8;
-margin-top:10px;
-}
-
-/* products */
 
 .products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:40px;
-padding:80px;
+display:flex;
+justify-content:center;
+padding:60px;
 }
 
 .card{
-background:rgba(255,255,255,0.05);
-border-radius:20px;
-padding:20px;
-text-align:center;
-backdrop-filter:blur(10px);
-transition:0.4s;
+background:#1e293b;
+padding:25px;
+border-radius:14px;
+width:280px;
+transition:0.3s;
 }
 
 .card:hover{
-transform:translateY(-15px) scale(1.05);
-box-shadow:0 0 30px rgba(34,197,94,0.6);
+transform:translateY(-10px);
+box-shadow:0 10px 25px black;
 }
 
 .card img{
-width:100%;
-border-radius:12px;
+width:120px;
 margin-bottom:15px;
 }
 
 .price{
-font-size:24px;
+font-size:22px;
 color:#22c55e;
-margin:10px 0;
+margin:10px;
 }
 
 button{
 padding:12px 25px;
-border:none;
-border-radius:8px;
 background:#22c55e;
-color:white;
+border:none;
+border-radius:6px;
 cursor:pointer;
-font-size:15px;
-}
-
-button:hover{
-background:#16a34a;
-}
-
-footer{
-text-align:center;
-padding:30px;
-color:#94a3b8;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="bg"></div>
+<header>
 
-<nav>
+<h1>PremiumHub</h1>
 
-<h2>PremiumHub</h2>
+<p>Cheap Premium Subscriptions</p>
 
-<div>
-<a href="#">Home</a>
-<a href="#">Products</a>
-</div>
-
-</nav>
-
-<section class="hero">
-
-<h1>Premium Subscriptions</h1>
-
-<p>Buy Canva Pro, Netflix, Prime at lowest price</p>
-
-</section>
-
+</header>
 
 <section class="products">
 
 <div class="card">
 
-<img src="https://static.canva.com/web/images/canva-og-image.jpg">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg">
 
-<h3>Canva Pro</h3>
+<h2>Canva Pro</h2>
+
+<p>1 Month Access</p>
 
 <div class="price">₹99</div>
 
-<button onclick="payNow()">Buy Now</button>
+<button onclick="buy()">Buy Now</button>
 
 </div>
 
 </section>
 
-
-<footer>
-
-© PremiumHub
-
-</footer>
-
-
 <script>
 
-function payNow(){
-
-var options = {
-
-"key": "YOUR_RAZORPAY_KEY",
-
-"amount": "9900",
-
-"currency": "INR",
-
-"name": "PremiumHub",
-
-"description": "Canva Pro Subscription",
-
-"image": "https://static.canva.com/web/images/canva-og-image.jpg",
-
-"handler": function (response){
-
-alert("Payment Successful! ID: " + response.razorpay_payment_id);
-
-}
-
-};
-
-var rzp1 = new Razorpay(options);
-
-rzp1.open();
-
+function buy(){
+alert("Buy button works! Next step: add payment.");
 }
 
 </script>
