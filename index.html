@@ -1,43 +1,75 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>PremiumHub</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PremiumHub</title>
+
 <style>
 
 body{
-font-family:Arial;
 margin:0;
+font-family:Arial;
 background:#0f172a;
 color:white;
-text-align:center;
 }
 
-header{
-padding:60px;
+/* NAVBAR */
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 40px;
+background:#020617;
+}
+
+nav h2{
+color:#22c55e;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+padding:120px 20px;
 background:linear-gradient(120deg,#1e293b,#020617);
 }
 
+.hero h1{
+font-size:50px;
+}
+
+.hero p{
+color:#94a3b8;
+font-size:18px;
+}
+
+/* PRODUCT GRID */
+
 .products{
-display:flex;
-justify-content:center;
-flex-wrap:wrap;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:30px;
-padding:40px;
+padding:60px;
 }
 
 .card{
 background:#1e293b;
+border-radius:14px;
 padding:20px;
-width:260px;
-border-radius:12px;
+text-align:center;
 transition:0.3s;
 }
 
 .card:hover{
 transform:translateY(-10px);
-box-shadow:0 10px 20px black;
+box-shadow:0 15px 25px black;
 }
 
 .card img{
@@ -48,38 +80,61 @@ border-radius:10px;
 .price{
 font-size:22px;
 color:#22c55e;
-margin:10px;
+margin:10px 0;
 }
 
 button{
-padding:10px 20px;
-background:#22c55e;
+padding:10px 25px;
 border:none;
 border-radius:6px;
+background:#22c55e;
 cursor:pointer;
 }
 
+/* FOOTER */
+
+footer{
+text-align:center;
+padding:20px;
+background:#020617;
+color:#94a3b8;
+}
+
 </style>
+
 </head>
 
 <body>
 
-<header>
+<nav>
 
-<h1>PremiumHub</h1>
-<p>Cheap Premium Subscriptions</p>
+<h2>PremiumHub</h2>
 
-</header>
+<div>
+<a href="#">Home</a>
+<a href="#">Products</a>
+<a href="#">Contact</a>
+</div>
 
-<div class="products">
+</nav>
+
+
+<section class="hero">
+
+<h1>Premium Subscriptions</h1>
+
+<p>Buy Canva Pro, Netflix, Prime & More at Cheapest Price</p>
+
+</section>
+
+
+<section class="products">
 
 <div class="card">
 
 <img src="https://static.canva.com/web/images/canva-og-image.jpg">
 
-<h2>Canva Pro</h2>
-
-<p>1 Month Access</p>
+<h3>Canva Pro</h3>
 
 <div class="price">₹99</div>
 
@@ -87,7 +142,53 @@ cursor:pointer;
 
 </div>
 
+
+<div class="card">
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg">
+
+<h3>Netflix</h3>
+
+<div class="price">₹199</div>
+
+<button>Buy Now</button>
+
 </div>
+
+
+<div class="card">
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png">
+
+<h3>Amazon Prime</h3>
+
+<div class="price">₹149</div>
+
+<button>Buy Now</button>
+
+</div>
+
+
+<div class="card">
+
+<img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png">
+
+<h3>Spotify Premium</h3>
+
+<div class="price">₹59</div>
+
+<button>Buy Now</button>
+
+</div>
+
+</section>
+
+
+<footer>
+
+<p>© 2026 PremiumHub</p>
+
+</footer>
 
 </body>
 </html>
