@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Zexus AI – Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#03030a;--s2:rgba(255,255,255,0.06);--b1:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.12);
+  --purple:#8b5cf6;--blue:#3b82f6;--cyan:#06b6d4;--green:#22c55e;
+  --text:#e2e8f0;--muted:#64748b;--fd:'Orbitron',monospace;--fb:'Syne',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--fb);overflow:hidden;}
+body{display:flex;flex-direction:column;}
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes cspin{to{transform:rotate(-360deg);}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:none;}}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.3;}30%{transform:translateY(-8px);opacity:1;}}
+
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:rgba(3,3,10,.95);border-bottom:1px solid var(--b1);flex-shrink:0;}
+.logo{font-family:var(--fd);font-size:.9rem;font-weight:700;letter-spacing:3px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.horb{width:28px;height:28px;border-radius:50%;background:conic-gradient(var(--purple),var(--cyan),var(--blue),var(--purple));animation:spin 6s linear infinite;position:relative;}
+.horb-i{position:absolute;inset:2px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:.75rem;animation:cspin 6s linear infinite;}
+.hst{font-size:.6rem;color:var(--green);display:flex;align-items:center;gap:4px;}
+.hst-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+.hbtn{width:32px;height:32px;border-radius:8px;border:1px solid var(--b1);background:transparent;color:#94a3b8;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;transition:.2s;}
+.hbtn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* SETUP SCREEN */
+#setup{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.card{background:var(--s2);border:1px solid var(--b2);border-radius:20px;padding:32px 28px;width:100%;max-width:440px;animation:slideUp .6s ease forwards;}
+.card-orb{width:56px;height:56px;border-radius:50%;background:conic-gradient(var(--purple),var(--cyan),var(--blue),var(--purple));animation:spin 5s linear infinite;position:relative;margin:0 auto 16px;box-shadow:0 0 30px rgba(139,92,246,.4);}
+.card-orb-i{position:absolute;inset:3px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.4rem;animation:cspin 5s linear infinite;}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;border:1px solid rgba(34,197,94,.25);color:var(--green);font-size:.65rem;letter-spacing:1px;margin-bottom:16px;font-family:var(--fd);}
+.card h2{font-family:var(--fd);font-size:.95rem;letter-spacing:2px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;text-align:center;}
+.card p{color:#94a3b8;font-size:.8rem;line-height:1.7;margin-bottom:20px;text-align:center;}
+.card p a{color:var(--cyan);}
+label{display:block;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);font-family:var(--fd);margin-bottom:6px;}
+select,input{width:100%;padding:11px 14px;background:rgba(0,0,0,.5);border:1px solid var(--b2);border-radius:10px;color:var(--text);font-family:var(--fb);font-size:.83rem;outline:none;margin-bottom:14px;-webkit-appearance:none;}
+select:focus,input:focus{border-color:var(--purple);}
+input::placeholder{color:var(--muted);}
+
+/* THE MAIN BUTTON - very explicit styles */
+#go{
+  display:block;width:100%;padding:15px;
+  background:linear-gradient(135deg,#8b5cf6,#3b82f6);
+  border:none;border-radius:12px;
+  color:#ffffff;font-family:'Orbitron',monospace;
+  font-size:.72rem;font-weight:700;letter-spacing:2px;
+  cursor:pointer;text-align:center;
+  -webkit-appearance:none;appearance:none;
+  transition:opacity .2s,transform .1s;
+  margin-top:4px;
+  box-shadow:0 4px 24px rgba(139,92,246,.4);
+}
+#go:active{transform:scale(.97);opacity:.8;}
+
+#msg-box{min-height:20px;margin-top:10px;font-size:.78rem;text-align:center;padding:8px;border-radius:8px;}
+#msg-box.err{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2);}
+#msg-box.ok{background:rgba(34,197,94,.1);color:#86efac;border:1px solid rgba(34,197,94,.2);}
+
+.steps{margin-top:18px;padding:14px;background:rgba(6,182,212,.05);border:1px solid rgba(6,182,212,.1);border-radius:12px;}
+.steps-title{font-family:var(--fd);font-size:.58rem;letter-spacing:2px;color:var(--cyan);margin-bottom:8px;}
+.step{font-size:.75rem;color:#94a3b8;line-height:1.6;padding:3px 0;display:flex;gap:6px;}
+.step b{color:var(--cyan);}
+.step a{color:var(--cyan);text-decoration:none;}
+
+/* CHAT SCREEN */
+#chat{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.mbar{flex-shrink:0;padding:8px 20px;background:rgba(139,92,246,.07);border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;}
+.mbar-name{font-size:.65rem;color:var(--cyan);font-family:var(--fd);letter-spacing:1px;}
+.mbar-btn{font-size:.65rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--fb);transition:.2s;}
+.mbar-btn:hover{color:var(--cyan);}
+#msgs{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;}
+#msgs::-webkit-scrollbar{width:2px;}
+#msgs::-webkit-scrollbar-thumb{background:rgba(139,92,246,.3);}
+
+/* WELCOME */
+.welcome{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:24px 16px;animation:slideUp .7s ease;}
+.worb{width:56px;height:56px;border-radius:50%;background:conic-gradient(var(--purple),var(--cyan),var(--blue),var(--purple));animation:spin 5s linear infinite;position:relative;box-shadow:0 0 30px rgba(139,92,246,.3);}
+.worb-i{position:absolute;inset:3px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.4rem;animation:cspin 5s linear infinite;}
+.welcome h2{font-family:var(--fd);font-size:1.1rem;letter-spacing:2px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.welcome p{color:var(--muted);font-size:.82rem;line-height:1.7;max-width:320px;}
+.sugs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.sug{padding:7px 14px;border:1px solid var(--b2);border-radius:100px;font-size:.74rem;color:#94a3b8;background:var(--s2);cursor:pointer;transition:.2s;}
+.sug:hover,.sug:active{border-color:var(--cyan);color:var(--cyan);}
+
+/* BUBBLES */
+.row{display:flex;gap:8px;align-items:flex-end;animation:slideUp .3s ease;}
+.row.u{flex-direction:row-reverse;}
+.av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;}
+.av.ai{background:linear-gradient(135deg,var(--purple),var(--cyan));}
+.av.u{background:var(--s2);border:1px solid var(--b2);}
+.bwrap{max-width:78%;}
+.bub{padding:11px 15px;border-radius:16px;font-size:.85rem;line-height:1.75;word-break:break-word;}
+.bub.ai{background:var(--s2);border:1px solid var(--b1);border-bottom-left-radius:3px;}
+.bub.u{background:linear-gradient(135deg,var(--purple),var(--blue));border-bottom-right-radius:3px;color:#fff;}
+.bub code{background:rgba(0,0,0,.4);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:.78em;}
+.bub pre{background:rgba(0,0,0,.4);border:1px solid var(--b1);border-radius:8px;padding:10px;margin:8px 0;overflow-x:auto;font-size:.76rem;font-family:monospace;}
+.bt{font-size:.6rem;color:var(--muted);margin-top:4px;padding:0 3px;}
+.row.u .bt{text-align:right;}
+.typing{display:flex;gap:4px;align-items:center;padding:12px 16px;background:var(--s2);border:1px solid var(--b1);border-radius:16px;border-bottom-left-radius:3px;}
+.td{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:tdot 1.2s ease infinite;}
+.td:nth-child(2){animation-delay:.2s;}.td:nth-child(3){animation-delay:.4s;}
+.errbub{padding:10px 14px;border-radius:10px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#fca5a5;font-size:.8rem;line-height:1.6;}
+
+/* INPUT */
+.inp-area{flex-shrink:0;padding:12px 20px 16px;background:rgba(3,3,10,.95);border-top:1px solid var(--b1);}
+.inp-row{display:flex;gap:8px;align-items:flex-end;background:var(--s2);border:1px solid var(--b2);border-radius:14px;padding:8px 8px 8px 14px;transition:.3s;}
+.inp-row:focus-within{border-color:rgba(139,92,246,.45);}
+#txt{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--fb);font-size:.85rem;resize:none;min-height:22px;max-height:120px;line-height:1.6;padding:2px 0;}
+#txt::placeholder{color:var(--muted);}
+#sendbtn{width:36px;height:36px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,var(--purple),var(--blue));border:none;cursor:pointer;color:#fff;font-size:.9rem;transition:.2s;box-shadow:0 0 14px rgba(139,92,246,.3);}
+#sendbtn:active{transform:scale(.92);}
+#sendbtn:disabled{opacity:.3;cursor:not-allowed;}
+.inf{font-size:.62rem;color:var(--muted);margin-top:6px;padding:0 2px;display:flex;justify-content:space-between;}
+@media(max-width:480px){header,.inp-area{padding-left:14px;padding-right:14px;}#msgs{padding:14px;}.bwrap{max-width:88%;}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="app">
+
+<!-- HEADER -->
+<header>
+  <div class="logo">ZEXUS AI</div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="horb"><div class="horb-i">🧠</div></div>
+    <div>
+      <div style="font-family:var(--fd);font-size:.6rem;letter-spacing:2px;">NEURAL CHAT</div>
+      <div class="hst"><span class="hst-dot"></span><span id="sttxt">Ready</span></div>
+    </div>
+  </div>
+  <button class="hbtn" onclick="clearChat()">🗑</button>
+</header>
+
+<!-- SETUP SCREEN -->
+<div id="setup">
+  <div class="card">
+    <div style="text-align:center;">
+      <div class="card-orb"><div class="card-orb-i">🧠</div></div>
+      <div class="badge">✦ 100% FREE · No Credit Card</div>
+      <h2>CONNECT YOUR AI</h2>
+      <p>Enter your free <strong>OpenRouter API key</strong><br/>
+      Get one free → <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></p>
+    </div>
+
+    <label>Choose AI Model</label>
+    <select id="mpick">
+      <option value="meta-llama/llama-3.3-8b-instruct:free">🦙 Llama 3.3 8B — Best Free</option>
+      <option value="mistralai/mistral-7b-instruct:free">⚡ Mistral 7B — Fast</option>
+      <option value="google/gemma-3-4b-it:free">✦ Gemma 3 — Google AI</option>
+      <option value="deepseek/deepseek-r1:free">🧠 DeepSeek R1 — Powerful</option>
+    </select>
+
+    <label>Your OpenRouter API Key</label>
+    <input id="kin" type="password" placeholder="sk-or-v1-xxxxxxxxxxxxxxxx" autocomplete="off"/>
+
+    <button id="go" onclick="doStart()">🚀 START CHATTING — FREE</button>
+    <div id="msg-box"></div>
+
+    <div class="steps">
+      <div class="steps-title">HOW TO GET YOUR FREE KEY</div>
+      <div class="step"><b>1.</b> Go to <a href="https://openrouter.ai" target="_blank">openrouter.ai</a> → Sign up with Google</div>
+      <div class="step"><b>2.</b> Click profile icon → Keys → Create Key</div>
+      <div class="step"><b>3.</b> Copy key starting with <b>sk-or-v1-</b></div>
+      <div class="step"><b>4.</b> Paste above → tap Start Chatting 🎉</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT SCREEN -->
+<div id="chat">
+  <div class="mbar">
+    <span class="mbar-name" id="mname">🧠 Zexus AI</span>
+    <button class="mbar-btn" onclick="goBack()">⚙ Change Key</button>
+  </div>
+  <div id="msgs">
+    <div class="welcome" id="welcome">
+      <div class="worb"><div class="worb-i">🧠</div></div>
+      <h2>ZEXUS AI</h2>
+      <p>Your AI is connected and ready. Ask me anything!</p>
+      <div class="sugs">
+        <div class="sug" onclick="sug(this)">✍️ Write a professional email</div>
+        <div class="sug" onclick="sug(this)">💡 5 startup business ideas</div>
+        <div class="sug" onclick="sug(this)">📋 Summarize a paragraph</div>
+        <div class="sug" onclick="sug(this)">🌐 Translate to Spanish</div>
+        <div class="sug" onclick="sug(this)">🐍 Write Python code</div>
+        <div class="sug" onclick="sug(this)">🎯 Help me reply to someone</div>
+      </div>
+    </div>
+  </div>
+  <div class="inp-area">
+    <div class="inp-row">
+      <textarea id="txt" placeholder="Message Zexus AI…" rows="1" oninput="grow(this)" onkeydown="kb(event)"></textarea>
+      <button id="sendbtn" onclick="send()">➤</button>
+    </div>
+    <div class="inf">
+      <span>Enter to send · Shift+Enter new line</span>
+      <span id="mfoot"></span>
+    </div>
+  </div>
+</div>
+
+</div><!-- .app -->
+
+<script>
+// BG
+(()=>{
+  const c=document.getElementById('bg'),x=c.getContext('2d');
+  let W,H,p=[];
+  const r=()=>{W=c.width=innerWidth;H=c.height=innerHeight;};r();
+  window.addEventListener('resize',()=>{r();init();});
+  const init=()=>{p=[];const n=Math.floor(W*H/30000);for(let i=0;i<n;i++)p.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.6+.1,vx:(Math.random()-.5)*.1,vy:(Math.random()-.5)*.1,o:Math.random()*.25+.05});};
+  init();
+  const d=()=>{x.clearRect(0,0,W,H);p.forEach(q=>{q.x+=q.vx;q.y+=q.vy;if(q.x<0)q.x=W;if(q.x>W)q.x=0;if(q.y<0)q.y=H;if(q.y>H)q.y=0;x.beginPath();x.arc(q.x,q.y,q.r,0,Math.PI*2);x.fillStyle=`rgba(139,92,246,${q.o})`;x.fill();});requestAnimationFrame(d);};d();
+})();
+
+// STATE
+var KEY='', MDL='', HIST=[], BUSY=false;
+
+// AUTO-LOAD SAVED KEY
+window.onload=function(){
+  var k=localStorage.getItem('zx_key');
+  var m=localStorage.getItem('zx_mdl');
+  if(k&&m){
+    KEY=k; MDL=m;
+    var sel=document.getElementById('mpick');
+    sel.value=m;
+    openChat();
+  }
+};
+
+// START BUTTON HANDLER
+function doStart(){
+  var k=document.getElementById('kin').value.trim();
+  var m=document.getElementById('mpick').value;
+  var box=document.getElementById('msg-box');
+  var btn=document.getElementById('go');
+
+  box.className='';
+  box.textContent='';
+
+  if(!k){
+    box.className='err';
+    box.textContent='⚠️ Please paste your API key in the box above!';
+    return;
+  }
+  if(k.length < 20){
+    box.className='err';
+    box.textContent='⚠️ Key looks too short. Copy the full key from openrouter.ai/keys';
+    return;
+  }
+
+  box.className='ok';
+  box.textContent='✅ Key accepted! Opening chat…';
+  btn.textContent='Opening…';
+  btn.style.opacity='0.6';
+
+  KEY=k; MDL=m;
+  localStorage.setItem('zx_key',k);
+  localStorage.setItem('zx_mdl',m);
+
+  setTimeout(function(){
+    btn.textContent='🚀 START CHATTING — FREE';
+    btn.style.opacity='1';
+    openChat();
+  }, 800);
+}
+
+function openChat(){
+  document.getElementById('setup').style.display='none';
+  document.getElementById('chat').style.display='flex';
+  var sel=document.getElementById('mpick');
+  var name=sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : MDL;
+  document.getElementById('mname').textContent='🧠 '+name;
+  document.getElementById('mfoot').textContent=name;
+  document.getElementById('txt').focus();
+}
+
+function goBack(){
+  document.getElementById('setup').style.display='flex';
+  document.getElementById('chat').style.display='none';
+  document.getElementById('kin').value='';
+  document.getElementById('msg-box').textContent='';
+  document.getElementById('msg-box').className='';
+}
+
+// HELPERS
+function now(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+function grow(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function kb(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function sug(el){
+  var t=el.textContent.replace(/^[^\s]+\s/,'');
+  document.getElementById('txt').value=t;
+  send();
+}
+function bot(){var m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;}
+
+function clearChat(){
+  HIST=[];
+  document.getElementById('msgs').innerHTML='<div class="welcome"><div class="worb"><div class="worb-i">🧠</div></div><h2>ZEXUS AI</h2><p style="color:var(--muted);font-size:.82rem;">Chat cleared! Ask me anything.</p><div class="sugs"><div class="sug" onclick="sug(this)">✍️ Write an email</div><div class="sug" onclick="sug(this)">💡 Startup ideas</div><div class="sug" onclick="sug(this)">🌐 Translate to Spanish</div><div class="sug" onclick="sug(this)">🐍 Write code</div></div></div>';
+}
+
+function md(t){
+  return t
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```[\w]*\n?([\s\S]*?)```/g,'<pre><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/^- (.*$)/gm,'<div style="padding-left:14px">· $1</div>')
+    .replace(/\n\n/g,'<br/><br/>').replace(/\n/g,'<br/>');
+}
+
+function addMsg(role,text){
+  var w=document.getElementById('welcome');if(w)w.remove();
+  var msgs=document.getElementById('msgs');
+  var row=document.createElement('div');row.className='row'+(role==='user'?' u':'');
+  var av=document.createElement('div');av.className='av '+(role==='user'?'u':'ai');av.textContent=role==='user'?'👤':'🧠';
+  var bw=document.createElement('div');bw.className='bwrap';
+  var b=document.createElement('div');b.className='bub '+(role==='user'?'u':'ai');b.innerHTML=md(text);
+  var bt=document.createElement('div');bt.className='bt';bt.textContent=now();
+  bw.appendChild(b);bw.appendChild(bt);row.appendChild(av);row.appendChild(bw);msgs.appendChild(row);bot();
+}
+
+function showTyping(){
+  var w=document.getElementById('welcome');if(w)w.remove();
+  var msgs=document.getElementById('msgs');
+  var row=document.createElement('div');row.className='row';row.id='trow';
+  var av=document.createElement('div');av.className='av ai';av.textContent='🧠';
+  var tb=document.createElement('div');tb.className='typing';tb.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
+  row.appendChild(av);row.appendChild(tb);msgs.appendChild(row);bot();
+}
+function hideTyping(){var t=document.getElementById('trow');if(t)t.remove();}
+
+function showErr(msg){
+  var msgs=document.getElementById('msgs');
+  var el=document.createElement('div');el.className='errbub';el.innerHTML='⚠️ '+msg;msgs.appendChild(el);bot();
+}
+
+// SEND
+async function send(){
+  if(BUSY)return;
+  var inp=document.getElementById('txt');
+  var text=inp.value.trim();
+  if(!text)return;
+
+  inp.value='';inp.style.height='auto';
+  addMsg('user',text);
+  HIST.push({role:'user',content:text});
+
+  BUSY=true;
+  document.getElementById('sendbtn').disabled=true;
+  document.getElementById('sttxt').textContent='Thinking…';
+  showTyping();
+
+  try{
+    var resp = await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+KEY,
+        'HTTP-Referer':location.href,
+        'X-Title':'Zexus AI'
+      },
+      body:JSON.stringify({
+        model:MDL,
+        messages:[
+          {role:'system',content:'You are Zexus AI, a smart and friendly assistant. Help with anything — writing, coding, ideas, questions. Be concise and use markdown when helpful.'},
+          ...HIST
+        ],
+        max_tokens:1024,
+        temperature:0.7
+      })
+    });
+
+    var data=await resp.json();
+    hideTyping();
+
+    if(!resp.ok){
+      var e=data?.error?.message||'Error '+resp.status;
+      if(resp.status===401)e='Invalid API key. Tap "Change Key" and paste your correct key from openrouter.ai/keys';
+      if(resp.status===429)e='Rate limit. Wait 10 seconds and try again, or switch model.';
+      showErr(e);HIST.pop();
+    } else {
+      var reply=data.choices[0].message.content;
+      addMsg('assistant',reply);
+      HIST.push({role:'assistant',content:reply});
+    }
+  } catch(err){
+    hideTyping();
+    showErr('Connection failed. Check your internet and try again.<br/>'+err.message);
+    HIST.pop();
+  }
+
+  document.getElementById('sttxt').textContent='Ready';
+  BUSY=false;
+  document.getElementById('sendbtn').disabled=false;
+  inp.focus();
+}
+</script>
+</body>
+</html>
