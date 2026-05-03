@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Zexus AI – Live Chat</title>
+<title>Zexus AI – Chat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -18,8 +18,6 @@
   --blue:#3b82f6;
   --cyan:#06b6d4;
   --green:#22c55e;
-  --red:#ef4444;
-  --amber:#f59e0b;
   --text:#e2e8f0;
   --muted:#64748b;
   --muted2:#94a3b8;
@@ -27,94 +25,104 @@
   --fb:'Syne',sans-serif;
 }
 html,body{height:100%;overflow:hidden;background:var(--bg);}
-body{font-family:var(--fb);color:var(--text);display:flex;flex-direction:column;cursor:none;}
-
-/* CURSOR */
-#cur,#cur-r{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
-#cur{width:10px;height:10px;background:var(--cyan);box-shadow:0 0 14px var(--cyan);}
-#cur-r{width:30px;height:30px;border:1px solid rgba(6,182,212,.45);transition:width .2s,height .2s,border-color .2s;}
+body{font-family:var(--fb);color:var(--text);display:flex;flex-direction:column;}
 
 /* BG */
-#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-/* APP SHELL */
+/* APP */
 .app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;}
 
-/* ── HEADER ── */
+/* HEADER */
 header{
-  flex-shrink:0;
-  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
   padding:14px 24px;
-  background:rgba(3,3,10,0.85);
+  background:rgba(3,3,10,0.9);
   backdrop-filter:blur(24px);
   border-bottom:1px solid var(--b1);
 }
-.logo{font-family:var(--fd);font-size:.95rem;font-weight:700;letter-spacing:3px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo{font-family:var(--fd);font-size:1rem;font-weight:700;letter-spacing:3px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .hc{display:flex;align-items:center;gap:10px;}
 .orb{width:32px;height:32px;border-radius:50%;background:conic-gradient(from 0deg,var(--purple),var(--cyan),var(--blue),var(--purple));animation:spin 7s linear infinite;position:relative;flex-shrink:0;}
 .orb-in{position:absolute;inset:2px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:.85rem;animation:cspin 7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 @keyframes cspin{to{transform:rotate(-360deg);}}
-.ai-name{font-family:var(--fd);font-size:.65rem;letter-spacing:2px;color:var(--text);}
+.ai-name{font-family:var(--fd);font-size:.65rem;letter-spacing:2px;}
 .ai-st{font-size:.62rem;color:var(--green);display:flex;align-items:center;gap:4px;}
 .sdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pg 2s infinite;}
 @keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 5px rgba(34,197,94,0);}}
 .hbtn{width:34px;height:34px;border-radius:8px;background:var(--s1);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;color:var(--muted2);transition:all .2s;}
 .hbtn:hover{border-color:var(--cyan);color:var(--cyan);}
 
-/* ── SETUP PANEL ── */
-#setup{
-  flex-shrink:0;
-  background:linear-gradient(135deg,rgba(139,92,246,.07),rgba(6,182,212,.07));
-  border-bottom:1px solid var(--b2);
-  padding:14px 24px;
-  display:flex;flex-direction:column;gap:10px;
+/* KEY SETUP SCREEN */
+#key-screen{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:24px;
 }
-.setup-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.setup-label{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);white-space:nowrap;font-family:var(--fd);}
+.key-card{
+  background:var(--s2);border:1px solid var(--b2);border-radius:24px;
+  padding:48px 40px;max-width:480px;width:100%;text-align:center;
+  backdrop-filter:blur(20px);
+  animation:fadeUp .7s ease forwards;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+.key-orb{width:72px;height:72px;border-radius:50%;background:conic-gradient(from 0deg,var(--purple),var(--cyan),var(--blue),var(--purple));animation:spin 6s linear infinite;position:relative;margin:0 auto 24px;box-shadow:0 0 40px rgba(139,92,246,.3);}
+.key-orb-in{position:absolute;inset:3px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.8rem;animation:cspin 6s linear infinite;}
+.key-card h2{font-family:var(--fd);font-size:1.1rem;letter-spacing:2px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.key-card p{color:var(--muted2);font-size:.85rem;line-height:1.7;margin-bottom:28px;}
+.key-card p a{color:var(--cyan);text-decoration:none;}
+.key-card p a:hover{text-decoration:underline;}
 
-/* Provider tabs */
-.provider-tabs{display:flex;gap:6px;}
-.ptab{
-  padding:7px 16px;border-radius:8px;
-  border:1px solid var(--b2);background:transparent;
-  color:var(--muted2);font-family:var(--fd);font-size:.6rem;letter-spacing:1.5px;
-  cursor:pointer;transition:all .2s;text-transform:uppercase;
+/* Model picker */
+.model-label{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);font-family:var(--fd);text-align:left;margin-bottom:8px;display:block;}
+#model-pick{
+  width:100%;background:rgba(0,0,0,.4);border:1px solid var(--b2);border-radius:10px;
+  padding:11px 14px;color:var(--text);font-family:var(--fb);font-size:.85rem;
+  outline:none;margin-bottom:16px;cursor:pointer;
 }
-.ptab.active{background:linear-gradient(135deg,var(--purple),var(--blue));border-color:transparent;color:#fff;box-shadow:0 0 16px rgba(139,92,246,.3);}
+#model-pick:focus{border-color:var(--purple);}
 
-/* Model selector */
-#model-select{
-  background:rgba(0,0,0,.35);border:1px solid var(--b2);border-radius:8px;
-  padding:7px 12px;color:var(--text);font-family:var(--fb);font-size:.8rem;
-  outline:none;cursor:pointer;transition:border-color .2s;
+#key-input{
+  width:100%;background:rgba(0,0,0,.4);border:1px solid var(--b2);border-radius:10px;
+  padding:13px 16px;color:var(--text);font-family:var(--fb);font-size:.85rem;
+  outline:none;margin-bottom:16px;text-align:center;letter-spacing:1px;
+  transition:border-color .3s;
 }
-#model-select:focus{border-color:var(--cyan);}
+#key-input:focus{border-color:var(--purple);}
+#key-input::placeholder{color:var(--muted);letter-spacing:0;}
 
-/* Key input */
-.key-wrap{display:flex;gap:8px;flex:1;min-width:240px;}
-#api-key{
-  flex:1;background:rgba(0,0,0,.35);border:1px solid var(--b2);border-radius:8px;
-  padding:7px 14px;color:var(--text);font-family:var(--fb);font-size:.82rem;
-  outline:none;transition:border-color .2s;
-}
-#api-key:focus{border-color:var(--purple);}
-#api-key::placeholder{color:var(--muted);}
-#save-btn{
-  padding:7px 18px;border-radius:8px;
+#start-btn{
+  width:100%;padding:14px;border-radius:10px;
   background:linear-gradient(135deg,var(--purple),var(--blue));
-  border:none;color:#fff;font-family:var(--fd);font-size:.6rem;letter-spacing:1.5px;
-  cursor:pointer;white-space:nowrap;transition:box-shadow .2s,opacity .2s;
+  border:none;color:#fff;font-family:var(--fd);font-size:.75rem;letter-spacing:2px;
+  cursor:pointer;transition:box-shadow .3s,transform .2s;
+  box-shadow:0 0 24px rgba(139,92,246,.3);
 }
-#save-btn:hover{box-shadow:0 0 18px rgba(139,92,246,.4);}
-#key-st{font-size:.68rem;white-space:nowrap;padding:4px 0;}
+#start-btn:hover{box-shadow:0 0 40px rgba(139,92,246,.5);transform:translateY(-2px);}
+#key-err{color:#fca5a5;font-size:.78rem;margin-top:10px;min-height:20px;}
 
-/* Free key link */
-.free-link{font-size:.68rem;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;}
-.free-link a{color:var(--cyan);text-decoration:none;transition:opacity .2s;}
-.free-link a:hover{opacity:.75;}
+.free-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:100px;
+  background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);
+  color:var(--green);font-size:.7rem;letter-spacing:1px;
+  margin-bottom:24px;font-family:var(--fd);
+}
 
-/* ── MESSAGES ── */
+/* CHAT SCREEN */
+#chat-screen{display:none;flex-direction:column;flex:1;overflow:hidden;}
+
+/* Model bar */
+.model-bar{
+  flex-shrink:0;padding:8px 24px;
+  background:rgba(139,92,246,.06);border-bottom:1px solid var(--b1);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+.model-info{font-size:.68rem;color:var(--cyan);font-family:var(--fd);letter-spacing:1px;}
+.change-key{font-size:.68rem;color:var(--muted);cursor:pointer;transition:color .2s;background:none;border:none;font-family:var(--fb);}
+.change-key:hover{color:var(--cyan);}
+
+/* Messages */
 #msgs{
   flex:1;overflow-y:auto;padding:24px;
   display:flex;flex-direction:column;gap:18px;
@@ -126,33 +134,25 @@ header{
 /* Welcome */
 #welcome{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  flex:1;text-align:center;gap:18px;padding:32px 20px;
+  flex:1;text-align:center;gap:16px;padding:32px 20px;
   animation:fadeUp .8s ease forwards;
 }
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
-.w-orb{width:72px;height:72px;border-radius:50%;background:conic-gradient(from 0deg,var(--purple),var(--cyan),var(--blue),var(--purple));animation:spin 6s linear infinite;box-shadow:0 0 40px rgba(139,92,246,.3);position:relative;}
-.w-orb-in{position:absolute;inset:3px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.8rem;animation:cspin 6s linear infinite;}
-#welcome h2{font-family:var(--fd);font-size:1.3rem;letter-spacing:2px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-#welcome p{color:var(--muted);font-size:.88rem;line-height:1.7;max-width:400px;}
+.w-orb{width:64px;height:64px;border-radius:50%;background:conic-gradient(from 0deg,var(--purple),var(--cyan),var(--blue),var(--purple));animation:spin 6s linear infinite;box-shadow:0 0 40px rgba(139,92,246,.3);position:relative;}
+.w-orb-in{position:absolute;inset:3px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.6rem;animation:cspin 6s linear infinite;}
+#welcome h2{font-family:var(--fd);font-size:1.2rem;letter-spacing:2px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+#welcome p{color:var(--muted);font-size:.85rem;line-height:1.7;max-width:380px;}
 .sugs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:4px;}
-.sug{
-  padding:9px 16px;border:1px solid var(--b2);border-radius:100px;
-  font-size:.78rem;color:var(--muted2);background:var(--s1);
-  cursor:pointer;transition:all .2s;
-}
+.sug{padding:8px 15px;border:1px solid var(--b2);border-radius:100px;font-size:.76rem;color:var(--muted2);background:var(--s1);cursor:pointer;transition:all .2s;}
 .sug:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(6,182,212,.05);}
 
-/* Message rows */
+/* Bubbles */
 .mrow{display:flex;gap:10px;align-items:flex-end;animation:fadeUp .35s cubic-bezier(.16,1,.3,1) forwards;}
 .mrow.user{flex-direction:row-reverse;}
 .mava{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.78rem;}
 .mava.ai{background:linear-gradient(135deg,var(--purple),var(--cyan));}
 .mava.user{background:var(--s2);border:1px solid var(--b2);}
-.mbody{max-width:74%;}
-.bubble{
-  padding:12px 16px;border-radius:16px;
-  font-size:.875rem;line-height:1.75;
-}
+.mbody{max-width:75%;}
+.bubble{padding:12px 16px;border-radius:16px;font-size:.875rem;line-height:1.75;}
 .bubble.ai{background:var(--s2);border:1px solid var(--b1);border-bottom-left-radius:3px;color:var(--text);}
 .bubble.user{background:linear-gradient(135deg,var(--purple),var(--blue));border-bottom-right-radius:3px;color:#fff;}
 .bubble code{background:rgba(0,0,0,.4);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:.8em;}
@@ -161,11 +161,7 @@ header{
 .mrow.user .btime{text-align:right;}
 
 /* Typing */
-.typing-bub{
-  display:flex;gap:5px;align-items:center;
-  padding:13px 17px;background:var(--s2);border:1px solid var(--b1);
-  border-radius:16px;border-bottom-left-radius:3px;
-}
+.typing-bub{display:flex;gap:5px;align-items:center;padding:13px 17px;background:var(--s2);border:1px solid var(--b1);border-radius:16px;border-bottom-left-radius:3px;}
 .td{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:tda 1.2s ease-in-out infinite;}
 .td:nth-child(2){animation-delay:.2s;}
 .td:nth-child(3){animation-delay:.4s;}
@@ -174,61 +170,29 @@ header{
 /* Error */
 .err-msg{padding:11px 16px;border-radius:10px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#fca5a5;font-size:.82rem;}
 
-/* ── INPUT ── */
-.inp-area{
-  flex-shrink:0;padding:14px 24px 18px;
-  background:rgba(3,3,10,.9);backdrop-filter:blur(24px);
-  border-top:1px solid var(--b1);
-}
-.inp-row{
-  display:flex;gap:10px;align-items:flex-end;
-  background:var(--s2);border:1px solid var(--b2);border-radius:14px;
-  padding:8px 8px 8px 16px;transition:border-color .3s,box-shadow .3s;
-}
+/* Input */
+.inp-area{flex-shrink:0;padding:14px 24px 18px;background:rgba(3,3,10,.92);backdrop-filter:blur(24px);border-top:1px solid var(--b1);}
+.inp-row{display:flex;gap:10px;align-items:flex-end;background:var(--s2);border:1px solid var(--b2);border-radius:14px;padding:8px 8px 8px 16px;transition:border-color .3s,box-shadow .3s;}
 .inp-row:focus-within{border-color:rgba(139,92,246,.4);box-shadow:0 0 0 3px rgba(139,92,246,.05);}
-#txt{
-  flex:1;background:transparent;border:none;outline:none;
-  color:var(--text);font-family:var(--fb);font-size:.88rem;
-  resize:none;line-height:1.6;max-height:130px;min-height:22px;padding:3px 0;
-}
+#txt{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--fb);font-size:.88rem;resize:none;line-height:1.6;max-height:130px;min-height:22px;padding:3px 0;}
 #txt::placeholder{color:var(--muted);}
-#send{
-  width:38px;height:38px;border-radius:10px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--purple),var(--blue));
-  border:none;cursor:pointer;color:#fff;font-size:.95rem;
-  display:flex;align-items:center;justify-content:center;
-  transition:transform .2s,box-shadow .2s,opacity .2s;
-  box-shadow:0 0 16px rgba(139,92,246,.25);
-}
+#send{width:38px;height:38px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--purple),var(--blue));border:none;cursor:pointer;color:#fff;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s,opacity .2s;box-shadow:0 0 16px rgba(139,92,246,.25);}
 #send:hover:not(:disabled){transform:scale(1.08);box-shadow:0 0 26px rgba(139,92,246,.45);}
 #send:disabled{opacity:.35;cursor:not-allowed;}
 .inp-foot{display:flex;justify-content:space-between;margin-top:8px;padding:0 2px;}
 .inp-hint{font-size:.65rem;color:var(--muted);}
 
-/* RESPONSIVE */
 @media(max-width:600px){
-  header,#setup,.inp-area{padding-left:14px;padding-right:14px;}
+  header,.inp-area{padding-left:14px;padding-right:14px;}
   #msgs{padding:14px;}
-  .bubble{font-size:.82rem;}
+  .key-card{padding:32px 20px;}
   .mbody{max-width:88%;}
-  .provider-tabs{flex-wrap:wrap;}
-}
-
-/* MODEL INFO BADGE */
-.model-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 12px;border-radius:100px;
-  background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.15);
-  font-size:.65rem;color:var(--cyan);letter-spacing:1px;font-family:var(--fd);
-  white-space:nowrap;
 }
 </style>
 </head>
 <body>
 
-<div id="cur"></div>
-<div id="cur-r"></div>
-<canvas id="bg-canvas"></canvas>
+<canvas id="bg"></canvas>
 
 <div class="app">
 
@@ -239,89 +203,83 @@ header{
     <div class="orb"><div class="orb-in">🧠</div></div>
     <div>
       <div class="ai-name">NEURAL CHAT</div>
-      <div class="ai-st"><span class="sdot"></span><span id="status-text">Ready</span></div>
+      <div class="ai-st"><span class="sdot"></span><span id="st-text">Ready</span></div>
     </div>
   </div>
-  <div style="display:flex;gap:8px;">
-    <div class="hbtn" title="Clear chat" onclick="clearChat()">🗑</div>
-  </div>
+  <div class="hbtn" onclick="clearChat()" title="Clear chat">🗑</div>
 </header>
 
-<!-- SETUP -->
-<div id="setup">
-  <div class="setup-row">
-    <span class="setup-label">Provider</span>
-    <div class="provider-tabs">
-      <button class="ptab active" id="tab-groq" onclick="switchProvider('groq')">⚡ Groq</button>
-      <button class="ptab" id="tab-gemini" onclick="switchProvider('gemini')">✦ Gemini</button>
-    </div>
-    <select id="model-select"></select>
-    <div class="model-badge" id="speed-badge">⚡ Ultra Fast</div>
-  </div>
-  <div class="setup-row">
-    <span class="setup-label">API Key</span>
-    <div class="key-wrap">
-      <input id="api-key" type="password" placeholder="Paste your free API key here…"/>
-      <button id="save-btn" onclick="saveKey()">SAVE</button>
-    </div>
-    <span id="key-st">⚪ No key</span>
-  </div>
-  <div class="free-link">
-    <span>Get a FREE key →</span>
-    <a href="https://console.groq.com/keys" target="_blank">🔗 Groq (free, no credit card)</a>
-    <a href="https://aistudio.google.com/app/apikey" target="_blank">🔗 Gemini (free tier)</a>
+<!-- KEY SETUP SCREEN -->
+<div id="key-screen">
+  <div class="key-card">
+    <div class="key-orb"><div class="key-orb-in">🧠</div></div>
+    <div class="free-badge">✦ 100% FREE · No Credit Card</div>
+    <h2>CONNECT YOUR AI</h2>
+    <p>
+      Enter your free <strong>OpenRouter API key</strong> to start chatting.<br/>
+      Get one free at <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> — takes 1 minute, no card needed!
+    </p>
+
+    <span class="model-label">Choose AI Model</span>
+    <select id="model-pick">
+      <option value="meta-llama/llama-3.3-8b-instruct:free">🦙 Llama 3.3 8B — Fast & Smart (Free)</option>
+      <option value="mistralai/mistral-7b-instruct:free">⚡ Mistral 7B — Quick Replies (Free)</option>
+      <option value="google/gemma-3-4b-it:free">✦ Gemma 3 4B — Google AI (Free)</option>
+      <option value="deepseek/deepseek-r1:free">🧠 DeepSeek R1 — Most Powerful (Free)</option>
+      <option value="microsoft/phi-3-mini-128k-instruct:free">🔷 Phi-3 Mini — Lightweight (Free)</option>
+    </select>
+
+    <input id="key-input" type="password" placeholder="sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxx"/>
+    <button id="start-btn" onclick="startChat()">🚀 START CHATTING — FREE</button>
+    <div id="key-err"></div>
   </div>
 </div>
 
-<!-- MESSAGES -->
-<div id="msgs">
-  <div id="welcome">
-    <div class="w-orb"><div class="w-orb-in">🧠</div></div>
-    <h2>ZEXUS AI CHAT</h2>
-    <p>Powered by free AI. No cost, no limits on free tiers. Just paste your key above and start chatting.</p>
-    <div class="sugs">
-      <div class="sug" onclick="useSug(this)">✍️ Draft a professional email</div>
-      <div class="sug" onclick="useSug(this)">💡 Give me 5 startup ideas</div>
-      <div class="sug" onclick="useSug(this)">📋 Summarize a paragraph for me</div>
-      <div class="sug" onclick="useSug(this)">🌐 Translate to Spanish</div>
-      <div class="sug" onclick="useSug(this)">🐍 Write a Python web scraper</div>
-      <div class="sug" onclick="useSug(this)">🎯 Help me reply to this message</div>
+<!-- CHAT SCREEN -->
+<div id="chat-screen">
+  <div class="model-bar">
+    <span class="model-info" id="model-info">🧠 Loading…</span>
+    <button class="change-key" onclick="changeKey()">⚙ Change Key / Model</button>
+  </div>
+
+  <div id="msgs">
+    <div id="welcome">
+      <div class="w-orb"><div class="w-orb-in">🧠</div></div>
+      <h2>ZEXUS AI</h2>
+      <p>Your intelligent assistant is ready. Ask me anything!</p>
+      <div class="sugs">
+        <div class="sug" onclick="useSug(this)">✍️ Draft a professional email</div>
+        <div class="sug" onclick="useSug(this)">💡 Give me 5 startup ideas</div>
+        <div class="sug" onclick="useSug(this)">📋 Summarize something for me</div>
+        <div class="sug" onclick="useSug(this)">🌐 Translate to Spanish</div>
+        <div class="sug" onclick="useSug(this)">🐍 Write Python code for me</div>
+        <div class="sug" onclick="useSug(this)">🎯 Help me reply to a message</div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- INPUT -->
-<div class="inp-area">
-  <div class="inp-row">
-    <textarea id="txt" placeholder="Message Zexus AI…" rows="1" onkeydown="onKey(event)" oninput="resize(this)"></textarea>
-    <button id="send" onclick="send()">➤</button>
-  </div>
-  <div class="inp-foot">
-    <span class="inp-hint">Enter to send · Shift+Enter new line</span>
-    <span class="inp-hint" id="provider-label">Groq · llama-3.3-70b-versatile</span>
+  <div class="inp-area">
+    <div class="inp-row">
+      <textarea id="txt" placeholder="Message Zexus AI…" rows="1" onkeydown="onKey(event)" oninput="resize(this)"></textarea>
+      <button id="send" onclick="send()">➤</button>
+    </div>
+    <div class="inp-foot">
+      <span class="inp-hint">Enter to send · Shift+Enter for new line</span>
+      <span class="inp-hint" id="model-foot"></span>
+    </div>
   </div>
 </div>
 
 </div><!-- .app -->
 
 <script>
-// ── CURSOR ────────────────────────────────────────
-const cur=document.getElementById('cur'),curR=document.getElementById('cur-r');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
-(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(loop);})();
-document.querySelectorAll('button,.sug,.hbtn,.ptab').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{curR.style.width='46px';curR.style.height='46px';curR.style.borderColor='rgba(139,92,246,.5)';});
-  el.addEventListener('mouseleave',()=>{curR.style.width='30px';curR.style.height='30px';curR.style.borderColor='rgba(6,182,212,.45)';});
-});
-
 // ── BG PARTICLES ──────────────────────────────────
 (()=>{
-  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  const c=document.getElementById('bg'),ctx=c.getContext('2d');
   let W,H,pts=[];
   const sz=()=>{W=c.width=innerWidth;H=c.height=innerHeight;};
   sz();window.addEventListener('resize',()=>{sz();init();});
-  const init=()=>{pts=[];const n=Math.floor(W*H/28000);for(let i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.7+.15,vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,o:Math.random()*.35+.07});};
+  const init=()=>{pts=[];const n=Math.floor(W*H/28000);for(let i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.7+.15,vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,o:Math.random()*.3+.06});};
   init();
   const draw=()=>{
     ctx.clearRect(0,0,W,H);
@@ -331,160 +289,73 @@ document.querySelectorAll('button,.sug,.hbtn,.ptab').forEach(el=>{
   };draw();
 })();
 
-// ── PROVIDERS CONFIG ──────────────────────────────
-const PROVIDERS = {
-  groq: {
-    name: 'Groq',
-    badge: '⚡ Ultra Fast',
-    models: [
-      { id: 'llama-3.3-70b-versatile', label: 'Llama 3.3 70B (Best)' },
-      { id: 'llama-3.1-8b-instant',    label: 'Llama 3.1 8B (Fastest)' },
-      { id: 'mixtral-8x7b-32768',      label: 'Mixtral 8x7B' },
-      { id: 'gemma2-9b-it',            label: 'Gemma 2 9B' },
-    ],
-    call: callGroq,
-  },
-  gemini: {
-    name: 'Gemini',
-    badge: '✦ Google AI',
-    models: [
-      { id: 'gemini-2.0-flash',         label: 'Gemini 2.0 Flash (Best)' },
-      { id: 'gemini-1.5-flash',         label: 'Gemini 1.5 Flash' },
-      { id: 'gemini-1.5-flash-8b',      label: 'Gemini 1.5 Flash 8B' },
-    ],
-    call: callGemini,
-  }
-};
-
 // ── STATE ─────────────────────────────────────────
-let provider = 'groq';
-let apiKey = '';
-let history = [];   // [{role,content}]
-let busy = false;
+let apiKey='', model='', history=[], busy=false;
 
-// ── INIT ─────────────────────────────────────────
-function init() {
-  // Restore saved key
-  const saved = localStorage.getItem('zexus_key_'+provider);
-  if (saved) { apiKey=saved; setStatus('🟢 Key active','#22c55e'); document.getElementById('api-key').placeholder='Key saved ✓'; }
-  else { apiKey=''; setStatus('⚪ No key','#64748b'); document.getElementById('api-key').placeholder='Paste your free API key here…'; }
-  buildModels();
-  updateProviderLabel();
+// ── INIT — check saved key ────────────────────────
+window.addEventListener('load',()=>{
+  const k=localStorage.getItem('zexus_or_key');
+  const m=localStorage.getItem('zexus_or_model');
+  if(k&&m){
+    apiKey=k; model=m;
+    document.getElementById('model-pick').value=m;
+    showChat();
+  }
+});
+
+function startChat(){
+  const k=document.getElementById('key-input').value.trim();
+  const m=document.getElementById('model-pick').value;
+  const err=document.getElementById('key-err');
+  if(!k){err.textContent='⚠️ Please paste your OpenRouter API key!';return;}
+  if(!k.startsWith('sk-or')&&!k.startsWith('sk-')){err.textContent='⚠️ Key should start with sk-or-v1-… Get it from openrouter.ai/keys';return;}
+  err.textContent='';
+  apiKey=k; model=m;
+  localStorage.setItem('zexus_or_key',k);
+  localStorage.setItem('zexus_or_model',m);
+  showChat();
 }
 
-function buildModels() {
-  const sel = document.getElementById('model-select');
-  sel.innerHTML = '';
-  PROVIDERS[provider].models.forEach(m => {
-    const o = document.createElement('option');
-    o.value = m.id; o.textContent = m.label; sel.appendChild(o);
-  });
-  document.getElementById('speed-badge').textContent = PROVIDERS[provider].badge;
+function showChat(){
+  document.getElementById('key-screen').style.display='none';
+  document.getElementById('chat-screen').style.display='flex';
+  const modelName = document.getElementById('model-pick').options[document.getElementById('model-pick').selectedIndex]?.text || model;
+  document.getElementById('model-info').textContent='🧠 '+modelName;
+  document.getElementById('model-foot').textContent=modelName;
+  document.getElementById('txt').focus();
 }
 
-function updateProviderLabel() {
-  const sel = document.getElementById('model-select');
-  document.getElementById('provider-label').textContent = PROVIDERS[provider].name+' · '+(sel.options[sel.selectedIndex]?.text||'');
-}
-document.getElementById('model-select').addEventListener('change', updateProviderLabel);
-
-function switchProvider(p) {
-  provider = p;
-  document.getElementById('tab-groq').classList.toggle('active', p==='groq');
-  document.getElementById('tab-gemini').classList.toggle('active', p==='gemini');
-  document.getElementById('api-key').value = '';
-  init();
+function changeKey(){
+  document.getElementById('key-screen').style.display='flex';
+  document.getElementById('chat-screen').style.display='none';
+  document.getElementById('key-input').value='';
 }
 
-function saveKey() {
-  const val = document.getElementById('api-key').value.trim();
-  if (!val) { setStatus('⚠️ Enter a key','#f59e0b'); return; }
-  apiKey = val;
-  localStorage.setItem('zexus_key_'+provider, val);
-  document.getElementById('api-key').value = '';
-  document.getElementById('api-key').placeholder = 'Key saved ✓';
-  setStatus('✅ Saved!','#22c55e');
-  setTimeout(()=>setStatus('🟢 Key active','#22c55e'),1600);
-}
-
-function setStatus(msg,color) {
-  const el=document.getElementById('key-st'); el.textContent=msg; el.style.color=color;
-}
-
-// ── API CALLS ─────────────────────────────────────
-async function callGroq(messages, model) {
-  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+apiKey },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role:'system', content:'You are Zexus AI, a premium intelligent assistant. Help users with messaging, productivity, coding, creative tasks, and daily questions. Be smart, concise, and friendly. Use markdown formatting when useful.' },
-        ...messages
-      ],
-      max_tokens: 1024,
-      temperature: 0.7,
-    })
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data?.error?.message || 'Groq error '+res.status);
-  return data.choices[0].message.content;
-}
-
-async function callGemini(messages, model) {
-  // Convert history to Gemini format
-  const contents = messages.map(m => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: m.content }]
-  }));
-  const sysPrompt = 'You are Zexus AI, a premium intelligent assistant. Help users with messaging, productivity, coding, creative tasks, and daily questions. Be smart, concise, and friendly. Use markdown formatting when useful.';
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json' },
-    body: JSON.stringify({
-      system_instruction:{ parts:[{ text: sysPrompt }] },
-      contents,
-      generationConfig:{ maxOutputTokens:1024, temperature:0.7 }
-    })
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data?.error?.message || 'Gemini error '+res.status);
-  return data.candidates[0].content.parts[0].text;
-}
-
-// ── UI HELPERS ────────────────────────────────────
-function now(){ return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
-
-function resize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,130)+'px'; }
-
-function onKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} }
-
-function useSug(el){
-  document.getElementById('txt').value = el.textContent.replace(/^[\S]+\s/,'');
-  resize(document.getElementById('txt'));
-  send();
-}
-
-function scrollBot(){ const m=document.getElementById('msgs'); m.scrollTop=m.scrollHeight; }
+// ── HELPERS ───────────────────────────────────────
+function now(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,130)+'px';}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function useSug(el){document.getElementById('txt').value=el.textContent.replace(/^[\S]+\s/,'');resize(document.getElementById('txt'));send();}
+function scrollBot(){const m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;}
 
 function clearChat(){
   history=[];
   document.getElementById('msgs').innerHTML=`
-    <div id="welcome" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;gap:18px;padding:32px 20px;animation:fadeUp .8s ease forwards;">
-      <div class="w-orb"><div class="w-orb-in">🧠</div></div>
-      <h2 style="font-family:var(--fd);font-size:1.3rem;letter-spacing:2px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">ZEXUS AI CHAT</h2>
-      <p style="color:var(--muted);font-size:.88rem;line-height:1.7;max-width:400px;">Chat cleared. Ask me anything!</p>
-      <div class="sugs">
-        <div class="sug" onclick="useSug(this)">✍️ Draft a professional email</div>
-        <div class="sug" onclick="useSug(this)">💡 Give me 5 startup ideas</div>
-        <div class="sug" onclick="useSug(this)">📋 Summarize a paragraph for me</div>
-        <div class="sug" onclick="useSug(this)">🌐 Translate to Spanish</div>
-      </div>
-    </div>`;
+  <div id="welcome" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;gap:16px;padding:32px 20px;animation:fadeUp .8s ease forwards;">
+    <div class="w-orb"><div class="w-orb-in">🧠</div></div>
+    <h2 style="font-family:var(--fd);font-size:1.2rem;letter-spacing:2px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">ZEXUS AI</h2>
+    <p style="color:var(--muted);font-size:.85rem;line-height:1.7;max-width:380px;">Chat cleared! Ask me anything.</p>
+    <div class="sugs">
+      <div class="sug" onclick="useSug(this)">✍️ Draft a professional email</div>
+      <div class="sug" onclick="useSug(this)">💡 Give me 5 startup ideas</div>
+      <div class="sug" onclick="useSug(this)">📋 Summarize something for me</div>
+      <div class="sug" onclick="useSug(this)">🌐 Translate to Spanish</div>
+    </div>
+  </div>`;
 }
 
-// Render markdown-lite
-function renderMD(text) {
+// ── RENDER MARKDOWN ───────────────────────────────
+function renderMD(text){
   return text
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/```([\w]*)\n?([\s\S]*?)```/g,'<pre><code>$2</code></pre>')
@@ -498,92 +369,14 @@ function renderMD(text) {
     .replace(/\n\n/g,'<br/><br/>').replace(/\n/g,'<br/>');
 }
 
-function addBubble(role, text) {
-  const w = document.getElementById('welcome');
-  if (w) w.remove();
-  const msgs = document.getElementById('msgs');
-  const row = document.createElement('div');
-  row.className = 'mrow '+(role==='user'?'user':'ai');
-  const ava = document.createElement('div');
-  ava.className = 'mava '+(role==='user'?'user':'ai');
-  ava.textContent = role==='user'?'👤':'🧠';
-  const body = document.createElement('div');
-  body.className = 'mbody';
-  const bub = document.createElement('div');
-  bub.className = 'bubble '+(role==='user'?'user':'ai');
-  bub.innerHTML = renderMD(text);
-  const t = document.createElement('div');
-  t.className = 'btime'; t.textContent = now();
-  body.appendChild(bub); body.appendChild(t);
-  row.appendChild(ava); row.appendChild(body);
-  msgs.appendChild(row); scrollBot();
-}
-
-function addTyping() {
-  const w=document.getElementById('welcome'); if(w)w.remove();
+function addBubble(role,text){
+  const w=document.getElementById('welcome');if(w)w.remove();
   const msgs=document.getElementById('msgs');
-  const row=document.createElement('div'); row.className='mrow ai'; row.id='typing-row';
-  const ava=document.createElement('div'); ava.className='mava ai'; ava.textContent='🧠';
-  const tb=document.createElement('div'); tb.className='typing-bub';
-  tb.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
-  row.appendChild(ava); row.appendChild(tb);
-  msgs.appendChild(row); scrollBot();
-}
-function removeTyping(){ const t=document.getElementById('typing-row'); if(t)t.remove(); }
-
-function addError(msg) {
-  const msgs=document.getElementById('msgs');
-  const el=document.createElement('div'); el.className='err-msg';
-  el.innerHTML='⚠️ '+msg; msgs.appendChild(el); scrollBot();
-}
-
-// ── SEND ──────────────────────────────────────────
-async function send() {
-  if (busy) return;
-  const inp = document.getElementById('txt');
-  const text = inp.value.trim();
-  if (!text) return;
-
-  if (!apiKey) {
-    addError('Please enter and save your free API key above first. Get one at the links shown!');
-    return;
-  }
-
-  inp.value=''; inp.style.height='auto';
-  addBubble('user', text);
-  history.push({ role:'user', content:text });
-  busy=true;
-  document.getElementById('send').disabled=true;
-  document.getElementById('status-text').textContent='Thinking…';
-  addTyping();
-
-  const model = document.getElementById('model-select').value;
-
-  try {
-    const reply = await PROVIDERS[provider].call(history, model);
-    removeTyping();
-    addBubble('assistant', reply);
-    history.push({ role:'assistant', content:reply });
-    document.getElementById('status-text').textContent='Ready';
-  } catch(err) {
-    removeTyping();
-    let msg = err.message;
-    if (msg.includes('401')||msg.includes('invalid_api_key')||msg.includes('API key not valid')) msg='Invalid API key. Double-check and re-save your key.';
-    else if (msg.includes('429')||msg.includes('quota')) msg='Rate limit reached. Wait a moment or switch models.';
-    else if (msg.includes('Failed to fetch')||msg.includes('NetworkError')) msg='Network error — check your internet connection.';
-    addError(msg);
-    history.pop();
-    document.getElementById('status-text').textContent='Error';
-    setTimeout(()=>document.getElementById('status-text').textContent='Ready',3000);
-  }
-
-  busy=false;
-  document.getElementById('send').disabled=false;
-  inp.focus();
-}
-
-// ── START ─────────────────────────────────────────
-init();
-</script>
-</body>
-</html>
+  const row=document.createElement('div');row.className='mrow '+(role==='user'?'user':'ai');
+  const ava=document.createElement('div');ava.className='mava '+(role==='user'?'user':'ai');ava.textContent=role==='user'?'👤':'🧠';
+  const body=document.createElement('div');body.className='mbody';
+  const bub=document.createElement('div');bub.className='bubble '+(role==='user'?'user':'ai');
+  bub.innerHTML=renderMD(text);
+  const t=document.createElement('div');t.className='btime';t.textContent=now();
+  body.appendChild(bub);body.appendChild(t);
+  row.append
